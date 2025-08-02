@@ -1,0 +1,11 @@
+body {
+  background-color: #2870b7;
+  height: 100vh;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  color: rgb(214, 10, 10) !important;
+  
+}
