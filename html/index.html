@@ -22,7 +22,128 @@
     <title>Tarmize</title>
   </head>
   <body>
-    <h1 class="bg-primary title">Welcome to Tarmize!</h1>
+    <!-- start nav bar -->
+    <header
+      class="col-8 mx-auto shadow mt-3 mb-4 bg-body rounded sticky-top rounded-3"
+    >
+      <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-3">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">tarmize</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">profile</a>
+              </li>
+            </ul>
+            <!-- user info login and register -->
+            <form class="d-flex align-items-center justify-content-start">
+              <i class="fas fa-user text-dark fs-5 me-2"></i>
+              <label class="me-2 fw-bold fs-6" for="">Yarab</label>
+              <button class="btn btn-outline-success" type="submit">
+                logout
+              </button>
+            </form>
+            <!-- end user info login and register -->
+
+            <!-- register and login buttons -->
+            <form
+              class="d-none d-flex align-items-center justify-content-start"
+            >
+              <button class="btn btn-outline-success me-2">register</button>
+              <button class="btn btn-outline-success">login</button>
+            </form>
+            <!-- end register and login buttons -->
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!-- end nav bar -->
+
+    <!-- start main content -->
+    <main class="container">
+      <!-- start post 1 -->
+      <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
+        <div class="card-header p-1 bg-light">
+          <img
+            src="../images/user.jpeg"
+            class="user-icon rounded-circle img-thumbnail"
+            alt=""
+          />
+          <span class="fw-bold text-dark fs-5">@ yarab</span>
+        </div>
+
+        <img
+          src="../images/Kung-Fu-Panda.jpg"
+          class="card-img-top img-thumbnail"
+          alt="..."
+        />
+        <div class="card-body bg-light ">
+          <p class="card-text mt-0">
+            <span class="fw-lighter text-dark-50">3 min ago</span>
+          </p>
+          <h5 class="card-title">title of post</h5>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </p>
+          <hr />
+          <p class="card-text mt-3">
+            <i class="fas fa-pen me-2"></i>
+            <span class="fw-bold">(3) comments</span>
+          </p>
+        </div>
+      </div>
+      <!-- end post 1 -->
+
+      <!-- start post 2 -->
+      <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
+        <div class="card-header p-1 bg-light">
+          <img
+            src="../images/user.jpeg"
+            class="user-icon rounded-circle img-thumbnail"
+            alt=""
+          />
+          <span class="fw-bold text-dark fs-5">@ yarab</span>
+        </div>
+
+        <img
+          src="../images/Kung-Fu-Panda.jpg"
+          class="card-img-top img-thumbnail"
+          alt="..."
+        />
+        <div class="card-body bg-light">
+          <p class="card-text mt-0">
+            <span class="fw-lighter text-dark-50">3 min ago</span>
+          </p>
+          <h5 class="card-title">title of post</h5>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </p>
+          <hr />
+          <p class="card-text mt-3">
+            <i class="fas fa-pen me-2"></i>
+            <span class="fw-bold">(3) comments</span>
+          </p>
+        </div>
+      </div>
+      <!-- end post 2 -->
+    </main>
+    <!-- end main content -->
 
     <!-- Bootstrap Bundle with Popper -->
     <script
@@ -33,7 +154,6 @@
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 
-    <script src="../js/App.js">
-    </script>
+    <script src="../js/App.js"></script>
   </body>
 </html>
