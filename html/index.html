@@ -24,6 +24,71 @@
     <title>Tarmize</title>
   </head>
   <body>
+    <!-- /*start Modal for login  */  -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Tarmize</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="username" class="col-form-label">Username:</label>
+            <input type="text" class="form-control" id="username">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="password">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" >Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /* end  login modal */ -->
+
+<!-- /* start Modal for register  */ -->
+ <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registerModalLabel">Tarmize</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="register-username" class="col-form-label">Username:</label>
+            <input type="text" class="form-control" id="register-username">
+          </div>
+          <div class="mb-3">
+            <label for="register-name" class="col-form-label">Name:</label>
+            <input type="text" class="form-control" id="register-name">
+          </div>
+          <div class="mb-3">
+            <label for="register-email" class="col-form-label">Email:</label>
+            <input type="email" class="form-control" id="register-email">
+          </div>
+          <div class="mb-3">
+            <label for="register-password" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="register-password">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">register</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- end Modal for register  -->
     <div id="root">
 
     </div>
@@ -39,5 +104,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 
     <script src="../js/App.js" type="module"></script>
+
   </body>
 </html>

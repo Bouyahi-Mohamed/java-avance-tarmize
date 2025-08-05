@@ -14,4 +14,28 @@ function getpost() {
     });
 }
 
-export { getpost };
+function postLogin(info) {
+  axios.post('https://tarmeezacademy.com/api/v1/login', info)
+  .then(response => {
+    console.log('Login successful:', response.data);
+    // change the userToken object
+    let params = {token : '',
+                  username: info.username,  
+                  logedin: false
+}
+    params.token = response.data.token;
+    params.username = response.data.user.username;  
+    params.logedin = true;
+    console.log('userToken:', params);
+    // Save the userToken object to localStorage
+    localStorage.setItem('token', JSON.stringify(params));
+    getpost();  // Fetch posts after login
+    render();  // Re-render the app to reflect the login state
+
+  })
+  .catch(error => {
+    console.error('Error logging in:', error);
+  });
+}
+
+export { getpost, postLogin };

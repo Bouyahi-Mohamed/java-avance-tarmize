@@ -1,7 +1,12 @@
 import { getpost } from "./api/api.js";
+import {handlelogin} from './api/Modal.js';
 
-
-
+// save token in localStorage
+let userToken = {token : '',
+              username: '',
+              logedin: false
+}
+localStorage.setItem('token', JSON.stringify(userToken));
 
 export default function render(posts = []) {
     const ROOT = document.getElementById('root');
@@ -36,9 +41,9 @@ export default function render(posts = []) {
                 </li>
               </ul>
               <!-- user info login and register -->
-              <form class="d-flex align-items-center justify-content-start">
+              <form class="${JSON.parse(localStorage.getItem('token')).logedin ? 'd-flex' : 'd-none'} d-flex align-items-center justify-content-start">
                 <i class="fas fa-user text-dark fs-5 me-2"></i>
-                <label class="me-2 fw-bold fs-6" for="">Yarab</label>
+                <label class="me-2 fw-bold fs-6" for="">${JSON.parse(localStorage.getItem('token')).username}</label>
                 <button class="btn btn-outline-success" type="submit">
                   logout
                 </button>
@@ -47,10 +52,11 @@ export default function render(posts = []) {
 
               <!-- register and login buttons -->
               <form
-                class="d-none d-flex align-items-center justify-content-start"
+                class=" ${JSON.parse(localStorage.getItem('token')).logedin ? 'd-none' : 'd-flex'} align-items-center justify-content-start"
               >
-                <button class="btn btn-outline-success me-2">register</button>
-                <button class="btn btn-outline-success">login</button>
+                <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">login</button>
+                <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-whatever="@mdo">register</button>
+
               </form>
               <!-- end register and login buttons -->
             </div>
@@ -105,9 +111,12 @@ export default function render(posts = []) {
 
 // Fetch posts and render them
 Promise.all([
-    getpost()  // Fetch posts from the API
+    getpost(),
+    handlelogin()
+     // Fetch posts from the API
 ]).then(([posts]) => {
     render(posts);  // Render the main content of the app after fetching posts
+     // Initialize the login modal handler
 }).catch(error => {
     console.error('Error during initialization:', error);
 });
