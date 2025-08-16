@@ -1,5 +1,5 @@
 import { getpost } from "./api/api.js";
-import {handlelogin} from './api/Modal.js';
+import {handlelogin,handleRegistration} from './api/Modal.js';
 
 // save token in localStorage
 let userToken = {token : '',
@@ -111,12 +111,13 @@ export default function render(posts = []) {
 
 // Fetch posts and render them
 Promise.all([
-    getpost(),
-    handlelogin()
-     // Fetch posts from the API
+  getpost(),
+  handlelogin(),
+  handleRegistration()
+   // Fetch posts from the API
 ]).then(([posts]) => {
-    render(posts);  // Render the main content of the app after fetching posts
-     // Initialize the login modal handler
+  render(posts);  // Render the main content of the app after fetching posts
+   // Initialize the login and registration modal handlers
 }).catch(error => {
-    console.error('Error during initialization:', error);
+  console.error('Error during initialization:', error);
 });

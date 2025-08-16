@@ -37,5 +37,17 @@ function postLogin(info) {
     console.error('Error logging in:', error);
   });
 }
+// postRegistration
+function postRegistration(info) {
+  axios.post('https://tarmeezacademy.com/api/v1/register', info)
+  .then(response => {
+    console.log('Registration successful:', response.data);
+    // You can handle the response as needed
+  })
+  .catch(error => {
+    console.error('Error registering:', error);
 
-export { getpost, postLogin };
+  });
+}
+
+export { getpost, postLogin, postRegistration };
