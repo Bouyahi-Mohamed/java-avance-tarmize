@@ -1,6 +1,5 @@
-
 import render from '../App.js';
-import { postLogin, postRegistration ,getpost} from './api.js';
+import { postLogin, postRegistration } from './api.js';
 
 function handlelogin() {
   var loginModal = document.getElementById('loginModal');
@@ -8,7 +7,7 @@ function handlelogin() {
   // Listen for the login button click inside the modal
   var loginButton = loginModal.querySelector('.btn.btn-primary');
   if (!loginButton) return;
-  loginButton.addEventListener('click', function () {
+  loginButton.addEventListener('click', async function () {
     var usernameInput = loginModal.querySelector('#username');
     var passwordInput = loginModal.querySelector('#password');
     if (!usernameInput || !passwordInput) return;
@@ -16,7 +15,6 @@ function handlelogin() {
       username: usernameInput.value,
       password: passwordInput.value
     };
-    postLogin(info);
     //close the modal after login
     var modal = bootstrap.Modal.getInstance(loginModal);
     if (modal) modal.hide();
@@ -24,7 +22,13 @@ function handlelogin() {
     usernameInput.value = '';
     passwordInput.value = '';
     // Re-render the app to reflect the new login state
-    render();
+    try {
+      await postLogin(info);
+      render();
+    } catch (e) {
+      alert('Login failed. Please check your credentials and try again.');
+      console.error('Login error:', e);
+    }
   });
 }
 
@@ -34,7 +38,8 @@ function handleRegistration() {
   // Listen for the register button click inside the modal
   var registerButton = registerModal.querySelector('.btn.btn-primary');
   if (!registerButton) return;
-  registerButton.addEventListener('click', async function () {
+  registerButton.addEventListener('click', async function (event) {
+    event.preventDefault();
     var usernameInput = registerModal.querySelector('#register-username');
     var nameInput = registerModal.querySelector('#register-name');
     var passwordInput = registerModal.querySelector('#register-password');
@@ -46,18 +51,37 @@ function handleRegistration() {
       password: passwordInput.value,
       email: emailInput.value
     };
-    await postRegistration(info);
-    //close the modal after registration
-    var modal = bootstrap.Modal.getInstance(registerModal);
-    if (modal) modal.hide();
-    // Clear the input fields after registration
-    usernameInput.value = '';
-    passwordInput.value = '';
-    emailInput.value = '';
-    // Re-render the app to reflect the new registration state
-    alert('Registration successful! Please log in.');
-    await getpost();  // Fetch posts after login
-    await render();
+    try {
+      const response = await postRegistration(info);
+      if (response) {
+        console.log('Registration response:', response.data);
+        var loginInfo = {
+          username: usernameInput.value,
+          password: passwordInput.value
+        };
+        console.log('Login info:', loginInfo);
+
+        // Close modal and clear fields before login
+        var modal = bootstrap.Modal.getInstance(registerModal);
+        if (modal) modal.hide();
+        usernameInput.value = '';
+        passwordInput.value = '';
+        emailInput.value = '';
+        alert('Registration successful! Logging you in...');
+
+        // Await login and then render
+        try {
+          await postLogin(loginInfo);
+          render();
+        } catch (e) {
+          alert('Login failed after registration. Please try logging in manually.');
+          console.error('Login error after registration:', e);
+        }
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed. Please try again.');
+    }
   });
 }
 

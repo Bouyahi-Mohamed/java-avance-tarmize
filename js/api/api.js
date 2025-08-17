@@ -14,40 +14,33 @@ function getpost() {
     });
 }
 
-function postLogin(info) {
-  axios.post('https://tarmeezacademy.com/api/v1/login', info)
-  .then(response => {
-    console.log('Login successful:', response.data);
-    // change the userToken object
-    let params = {token : '',
-                  username: info.username,  
-                  logedin: false
-}
-    params.token = response.data.token;
-    params.username = response.data.user.username;  
-    params.logedin = true;
-    console.log('userToken:', params);
-    // Save the userToken object to localStorage
+async function postLogin(info) {
+  try {
+    const response = await axios.post('https://tarmeezacademy.com/api/v1/login', info);
+    let params = {
+      token: response.data.token,
+      username: response.data.user.username,
+      logedin: true
+    };
     localStorage.setItem('token', JSON.stringify(params));
-    getpost();  // Fetch posts after login
-    render();  // Re-render the app to reflect the login state
-
-  })
-  .catch(error => {
+    // Re-render the app after successful login
+    await getpost();  // Fetch posts again to update the UI
+    render();  // Re-render the main content of the app
+    return response;
+  } catch (error) {
     console.error('Error logging in:', error);
-  });
+    throw error;
+  }
 }
 // postRegistration
-function postRegistration(info) {
-  axios.post('https://tarmeezacademy.com/api/v1/register', info)
-  .then(response => {
-    console.log('Registration successful:', response.data);
-    // You can handle the response as needed
-  })
-  .catch(error => {
+async function postRegistration(info) {
+  try {
+    const response = await axios.post('https://tarmeezacademy.com/api/v1/register', info);
+    return response;
+  } catch (error) {
     console.error('Error registering:', error);
-
-  });
+    throw error;
+  }
 }
 
 export { getpost, postLogin, postRegistration };
