@@ -1,6 +1,6 @@
 
 import render from '../App.js';
-import { postLogin, postRegistration} from './api.js';
+import { postLogin, postRegistration ,getpost} from './api.js';
 
 function handlelogin() {
   var loginModal = document.getElementById('loginModal');
@@ -34,7 +34,7 @@ function handleRegistration() {
   // Listen for the register button click inside the modal
   var registerButton = registerModal.querySelector('.btn.btn-primary');
   if (!registerButton) return;
-  registerButton.addEventListener('click', function () {
+  registerButton.addEventListener('click', async function () {
     var usernameInput = registerModal.querySelector('#register-username');
     var nameInput = registerModal.querySelector('#register-name');
     var passwordInput = registerModal.querySelector('#register-password');
@@ -46,7 +46,7 @@ function handleRegistration() {
       password: passwordInput.value,
       email: emailInput.value
     };
-    postRegistration(info);
+    await postRegistration(info);
     //close the modal after registration
     var modal = bootstrap.Modal.getInstance(registerModal);
     if (modal) modal.hide();
@@ -55,7 +55,9 @@ function handleRegistration() {
     passwordInput.value = '';
     emailInput.value = '';
     // Re-render the app to reflect the new registration state
-    render();
+    alert('Registration successful! Please log in.');
+    await getpost();  // Fetch posts after login
+    await render();
   });
 }
 
