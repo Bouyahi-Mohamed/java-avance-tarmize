@@ -1,5 +1,7 @@
 import render from '../App.js';
-import { postLogin, postRegistration } from './api.js';
+import { getpost, postLogin, postRegistration } from './api.js';
+
+const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
 
 function handlelogin() {
   var loginModal = document.getElementById('loginModal');
@@ -85,4 +87,32 @@ function handleRegistration() {
   });
 }
 
-export { handlelogin, handleRegistration };
+function logout() {
+  let logout = document.querySelector('.logout');
+  if (logout) {
+    console.log('Logout button found');
+    logout.addEventListener('click', function () {
+      localStorage.removeItem('token');
+      // Re-render the app to reflect the logout state
+      getpost().then(() => {
+        render();
+      });
+    });
+  } else {
+    console.log('Logout button not found');
+  }
+}
+function addPost(){
+  console.log('Add Post function called');
+ const addPost = document.getElementById('addPost');
+ if (!addPost) return;
+ addPost.addEventListener('click', function () {
+    // Logic to handle adding a post
+    alert('Add Post button clicked!'); // Placeholder for actual post creation logic
+    // You can implement the logic to open a modal or redirect to a post creation page
+  });
+
+}
+
+export { handlelogin, handleRegistration, logout, addPost };
+

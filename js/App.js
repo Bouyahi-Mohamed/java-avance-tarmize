@@ -1,16 +1,22 @@
 import { getpost } from "./api/api.js";
-import {handlelogin,handleRegistration} from './api/Modal.js';
+import { handlelogin, handleRegistration, logout,addPost } from './api/Modal.js';
 
 // save token in localStorage
-let userToken = {token : '',
-              username: '',
-              logedin: false
+if (!localStorage.getItem('token')) {
+  let userToken = {
+    token: '',
+    username: '',
+    logedin: false
+  };
+  localStorage.setItem('token', JSON.stringify(userToken));
 }
-localStorage.setItem('token', JSON.stringify(userToken));
 
 export default function render(posts = []) {
+  // Get the root element where the content will be rendered
+  
     const ROOT = document.getElementById('root');
 
+    const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
     const BarHTML = `<!-- start nav bar -->
       <header
         class="col-8 mx-auto shadow mt-3 mb-4 bg-body rounded sticky-top rounded-3"
@@ -41,18 +47,18 @@ export default function render(posts = []) {
                 </li>
               </ul>
               <!-- user info login and register -->
-              <form class="${JSON.parse(localStorage.getItem('token')).logedin ? 'd-flex' : 'd-none'} d-flex align-items-center justify-content-start">
+              <div class="user-info ${token.logedin ? 'd-flex' : 'd-none'} align-items-center">
                 <i class="fas fa-user text-dark fs-5 me-2"></i>
-                <label class="me-2 fw-bold fs-6" for="">${JSON.parse(localStorage.getItem('token')).username}</label>
-                <button class="btn btn-outline-success" type="submit">
+                <label class="me-2 fw-bold fs-6" for="">${token.username}</label>
+                <button class="btn btn-outline-success logout" type="button">
                   logout
                 </button>
-              </form>
+              </div>
               <!-- end user info login and register -->
 
               <!-- register and login buttons -->
               <form
-                class=" ${JSON.parse(localStorage.getItem('token')).logedin ? 'd-none' : 'd-flex'} align-items-center justify-content-start"
+                class=" ${token.logedin ? 'd-none' : 'd-flex'} align-items-center justify-content-start"
               >
                 <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-whatever="@mdo">login</button>
                 <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-whatever="@mdo">register</button>
@@ -66,46 +72,92 @@ export default function render(posts = []) {
       <!-- end nav bar -->`
     
 
-    let HTML = `
-    ${BarHTML}
-    <main class="container">
+  let HTML = `
+  ${BarHTML}
+  <!-- start main content -->
+  ${token.logedin ? (
+    ` 
+        <button class="addPost rounded-circle" id="addPost">
+         <i class="fa-solid fa-circle-plus"></i>
+        </button>
+      
+
       ${posts.map(post => `
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
           <div class="card-header p-1 bg-light">
+              <img
+                src="${post.author.profile_image || '../images/user.jpeg'}"
+                class="user-icon rounded-circle img-thumbnail"
+                alt=""
+                onerror="this.src='../images/user.jpeg'"
+              />
+              <span class="fw-bold text-dark fs-5">@ ${post.author.username || 'yarab'}</span>
+            </div>
             <img
-              src="${post.author.profile_image || '../images/user.jpeg'}"
-              class="user-icon rounded-circle img-thumbnail"
-              alt=""
-              onerror="this.src='../images/user.jpeg'"
+              src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
+              class="card-img-top img-thumbnail"
+              alt="..."
+              onerror="this.src='../images/Kung-Fu-Panda.jpg'"
             />
-            <span class="fw-bold text-dark fs-5">@ ${post.author.username || 'yarab'}</span>
+            <div class="card-body bg-light">
+              <p class="card-text mt-0">
+                <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
+              </p>
+              <h5 class="card-title">${post.title || 'title of post'}</h5>
+              <p class="card-text">
+                ${post.body || 'Some quick example text to build on the card title and make up the bulk of the card\'s content.'}
+              </p>
+              <hr />
+              <p class="card-text mt-3">
+                <i class="fas fa-pen me-2"></i>
+                <span class="fw-bold">${post.comments_count || 0} comments</span>
+              </p>
+            </div>
           </div>
-          <img
-            src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
-            class="card-img-top img-thumbnail"
-            alt="..."
-            onerror="this.src='../images/Kung-Fu-Panda.jpg'"
-          />
-          <div class="card-body bg-light">
-            <p class="card-text mt-0">
-              <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
-            </p>
-            <h5 class="card-title">${post.title || 'title of post'}</h5>
-            <p class="card-text">
-              ${post.body || 'Some quick example text to build on the card title and make up the bulk of the card\'s content.'}
-            </p>
-            <hr />
-            <p class="card-text mt-3">
-              <i class="fas fa-pen me-2"></i>
-              <span class="fw-bold">${post.comments_count || 0} comments</span>
-            </p>
+        `).join('')}
+      </main>`
+    ) : (
+      `<main class="container">
+        ${posts.map(post => `
+          <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
+            <div class="card-header p-1 bg-light">
+              <img
+                src="${post.author.profile_image || '../images/user.jpeg'}"
+                class="user-icon rounded-circle img-thumbnail"
+                alt=""
+                onerror="this.src='../images/user.jpeg'"
+              />
+              <span class="fw-bold text-dark fs-5">@ ${post.author.username || 'yarab'}</span>
+            </div>
+            <img
+              src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
+              class="card-img-top img-thumbnail"
+              alt="..."
+              onerror="this.src='../images/Kung-Fu-Panda.jpg'"
+            />
+            <div class="card-body bg-light">
+              <p class="card-text mt-0">
+                <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
+              </p>
+              <h5 class="card-title">${post.title || 'title of post'}</h5>
+              <p class="card-text">
+                ${post.body || 'Some quick example text to build on the card title and make up the bulk of the card\'s content.'}
+              </p>
+              <hr />
+              <p class="card-text mt-3">
+                <i class="fas fa-pen me-2"></i>
+                <span class="fw-bold">${post.comments_count || 0} comments</span>
+              </p>
+            </div>
           </div>
-        </div>
-      `).join('')}
-    </main>
+        `).join('')}
+      </main>`
+    )}
     `;
     ROOT.innerHTML = HTML;  // Inject the HTML content into the root element
     HTML = '';  // Clear the HTML variable to free up memory
+     logout(); // Attach logout event after rendering
+      addPost(); // attach addPost event after rendering
 
 }
 
@@ -113,7 +165,7 @@ export default function render(posts = []) {
 Promise.all([
   getpost(),
   handlelogin(),
-  handleRegistration()
+  handleRegistration(),
    // Fetch posts from the API
 ]).then(([posts]) => {
   render(posts);  // Render the main content of the app after fetching posts
@@ -121,3 +173,4 @@ Promise.all([
 }).catch(error => {
   console.error('Error during initialization:', error);
 });
+
