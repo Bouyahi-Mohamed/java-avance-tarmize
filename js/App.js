@@ -111,6 +111,12 @@ export default function render(posts = []) {
               <p class="card-text mt-3">
                 <i class="fas fa-pen me-2"></i>
                 <span class="fw-bold">${post.comments_count || 0} comments</span>
+                ${(() => {
+                  let tags = post.tags.length > 0 ? post.tags : ['dev', 'frontend', 'backend'];
+                  return tags.map(tag => `
+                    <span class="fw-bold"><button class="btn btn-outline-primary rounded-pill" type="button">${tag}</button></span>
+                  `).join('');
+                })()}
               </p>
             </div>
           </div>
@@ -147,6 +153,8 @@ export default function render(posts = []) {
               <p class="card-text mt-3">
                 <i class="fas fa-pen me-2"></i>
                 <span class="fw-bold">${post.comments_count || 0} comments</span>
+                <span class="fw-bold">${post.tags.join(', ') || 'No tags'}</span>
+
               </p>
             </div>
           </div>
