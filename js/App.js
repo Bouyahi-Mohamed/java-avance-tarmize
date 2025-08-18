@@ -77,7 +77,7 @@ export default function render(posts = []) {
   <!-- start main content -->
   ${token.logedin ? (
     ` 
-        <button class="addPost rounded-circle" id="addPost">
+        <button class="addPost rounded-circle" id="addPost"  data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@mdo">
          <i class="fa-solid fa-circle-plus"></i>
         </button>
       
