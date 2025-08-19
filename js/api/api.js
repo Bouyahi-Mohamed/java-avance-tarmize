@@ -43,4 +43,21 @@ async function postRegistration(info) {
   }
 }
 
-export { getpost, postLogin, postRegistration };
+// add post 
+async function AddPost(info) {
+  try {
+    const header = {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).token}`
+    };
+    const response = await axios.post('https://tarmeezacademy.com/api/v1/posts', info, { headers: header });
+    // Re-render the app after successful post
+    getpost();  // Fetch posts again to update the UI
+    render();  // Re-render the main content of the app
+    return response;
+  } catch (error) {
+    console.error('Error adding post:', error);
+    throw error;
+  }
+}
+
+export { getpost, postLogin, postRegistration, AddPost };

@@ -1,5 +1,5 @@
 import render from '../App.js';
-import { getpost, postLogin, postRegistration } from './api.js';
+import { AddPost, getpost, postLogin, postRegistration } from './api.js';
 
 const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
 
@@ -102,25 +102,56 @@ function logout() {
     console.log('Logout button not found');
   }
 }
-function addPost(){
- const addPostModal = document.getElementById('addPostModal')
-if (addPostModal) {
-  addPostModal.addEventListener('show.bs.modal', event => {
-    // Button that triggered the modal
-    const button = event.relatedTarget
-    // Extract info from data-bs-* attributes
-    const recipient = button.getAttribute('data-bs-whatever')
-    // If necessary, you could initiate an Ajax request here
-    // and then do the updating in a callback.
 
-    // Update the modal's content.
-    const modalTitle = exampleModal.querySelector('.modal-title')
-    const modalBodyInput = exampleModal.querySelector('.modal-body input')
 
-    modalTitle.textContent = `New message to ${recipient}`
-    modalBodyInput.value = recipient
-  })
-}}
+// Handle adding a new post
+function handleAddPost() {
+  console.log('handleAddPost called');
+  var addPostModal = document.getElementById('addPostModal');
+  if (!addPostModal) {
+    console.log('addPostModal not found');
+    return;
+  }
+  var addPostButton = addPostModal.querySelector('.add-post-btn');
+  if (!addPostButton) {
+    console.log('addPostButton not found');
+    return;
+  }
 
-export { handlelogin, handleRegistration, logout, addPost };
+  addPostButton = addPostModal.querySelector('.add-post-btn');
+  addPostButton.addEventListener('click', function (event) {
+    event.preventDefault();
+    var postNameInput = addPostModal.querySelector('#post-name');
+    var postBodyInput = addPostModal.querySelector('#post-body');
+    var postImageInput = addPostModal.querySelector('#Post-img');
+    if (!postNameInput || !postBodyInput) return;
+    // Create a FormData object to handle file uploads
+    // this is necessary for file uploads
+    // it is a instance of FormData
+    let formData = new FormData();
+    formData.append('title', postNameInput.value);
+    formData.append('body', postBodyInput.value);
+    // file is a arry but i want only the first one
+    formData.append('image', postImageInput ? postImageInput.files[0] : null);
+   
+    AddPost(formData).then(response => {
+      console.log('Post added successfully:', response.data);
+      // Re-fetch posts and render the updated list
+      return getpost();
+    }).then(posts => {
+      render(posts);  // Render the updated posts
+    }).catch(error => {
+      console.error('Error adding post:', error);
+      alert('Failed to add post. Please try again.');
+    });
+   
+    // Close the modal after adding the post
+    var modal = bootstrap.Modal.getInstance(addPostModal);
+    if (modal) modal.hide();
+    postNameInput.value = '';
+    postBodyInput.value = '';
+    postImageInput.value = '';
+  });
+}
 
+export { handlelogin, handleRegistration, logout, handleAddPost };

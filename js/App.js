@@ -1,5 +1,5 @@
 import { getpost } from "./api/api.js";
-import { handlelogin, handleRegistration, logout,addPost } from './api/Modal.js';
+import { handlelogin, handleRegistration,handleAddPost, logout, } from './api/Modal.js';
 
 // save token in localStorage
 if (!localStorage.getItem('token')) {
@@ -165,8 +165,7 @@ export default function render(posts = []) {
     ROOT.innerHTML = HTML;  // Inject the HTML content into the root element
     HTML = '';  // Clear the HTML variable to free up memory
      logout(); // Attach logout event after rendering
-      addPost(); // attach addPost event after rendering
-
+    
 }
 
 // Fetch posts and render them
@@ -174,6 +173,7 @@ Promise.all([
   getpost(),
   handlelogin(),
   handleRegistration(),
+  handleAddPost()  // Initialize the add post modal handler
    // Fetch posts from the API
 ]).then(([posts]) => {
   render(posts);  // Render the main content of the app after fetching posts
