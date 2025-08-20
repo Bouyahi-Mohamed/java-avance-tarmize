@@ -1,7 +1,9 @@
+import { AddPost, getpost, postLogin, postRegistration }from './api.js';
 import render from '../App.js';
-import { AddPost, getpost, postLogin, postRegistration } from './api.js';
+// import alert function
+import { showAlert } from '../utils/alert.js';
 
-const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
+// Removed unused 'token' variable
 
 function handlelogin() {
   var loginModal = document.getElementById('loginModal');
@@ -18,18 +20,18 @@ function handlelogin() {
       password: passwordInput.value
     };
     //close the modal after login
-    var modal = bootstrap.Modal.getInstance(loginModal);
-    if (modal) modal.hide();
+    closeModel(loginModal)
     // Clear the input fields after login
     usernameInput.value = '';
     passwordInput.value = '';
     // Re-render the app to reflect the new login state
     try {
       await postLogin(info);
-      render();
+      showAlert('Login successful!', 'success');
     } catch (e) {
-      alert('Login failed. Please check your credentials and try again.');
-      console.error('Login error:', e);
+      // await showAlert('Login failed. Please check your credentials and try again.');
+      getpost();
+      showAlert(e.response.data.message, 'danger');
     }
   });
 }
@@ -56,102 +58,96 @@ function handleRegistration() {
     try {
       const response = await postRegistration(info);
       if (response) {
-        console.log('Registration response:', response.data);
         var loginInfo = {
           username: usernameInput.value,
           password: passwordInput.value
         };
-        console.log('Login info:', loginInfo);
-
+       
         // Close modal and clear fields before login
-        var modal = bootstrap.Modal.getInstance(registerModal);
-        if (modal) modal.hide();
+        closeModel(registerModal)
         usernameInput.value = '';
         passwordInput.value = '';
         emailInput.value = '';
-        alert('Registration successful! Logging you in...');
-
         // Await login and then render
         try {
           await postLogin(loginInfo);
-          render();
+          showAlert('Registration successful!','success');
         } catch (e) {
-          alert('Login failed after registration. Please try logging in manually.');
-          console.error('Login error after registration:', e);
+          closeModel(registerModal)
+          getpost();
+      showAlert(e.response.data.message, 'danger');
         }
       }
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert('Registration failed. Please try again.');
+    } catch (e) {
+      closeModel(registerModal)
+     showAlert(e.response.data.message, 'danger');
+      getpost();
     }
   });
 }
 
-function logout() {
+ function logout() {
   let logout = document.querySelector('.logout');
   if (logout) {
-    console.log('Logout button found');
-    logout.addEventListener('click', function () {
+    logout.addEventListener('click', async function () {
       localStorage.removeItem('token');
       // Re-render the app to reflect the logout state
-      getpost().then(() => {
-        render();
-      });
+      await getpost();
+      showAlert('Logout successful!','success');
     });
   } else {
     console.log('Logout button not found');
   }
 }
-
-
 // Handle adding a new post
 function handleAddPost() {
-  console.log('handleAddPost called');
   var addPostModal = document.getElementById('addPostModal');
   if (!addPostModal) {
-    console.log('addPostModal not found');
     return;
   }
   var addPostButton = addPostModal.querySelector('.add-post-btn');
   if (!addPostButton) {
-    console.log('addPostButton not found');
     return;
   }
 
-  addPostButton = addPostModal.querySelector('.add-post-btn');
-  addPostButton.addEventListener('click', function (event) {
+  // Remove previous listeners by replacing the button with a clone
+  const newButton = addPostButton.cloneNode(true);
+  addPostButton.parentNode.replaceChild(newButton, addPostButton);
+
+  newButton.addEventListener('click', async function (event) {
     event.preventDefault();
     var postNameInput = addPostModal.querySelector('#post-name');
     var postBodyInput = addPostModal.querySelector('#post-body');
     var postImageInput = addPostModal.querySelector('#Post-img');
     if (!postNameInput || !postBodyInput) return;
-    // Create a FormData object to handle file uploads
-    // this is necessary for file uploads
-    // it is a instance of FormData
     let formData = new FormData();
     formData.append('title', postNameInput.value);
     formData.append('body', postBodyInput.value);
-    // file is a arry but i want only the first one
-    formData.append('image', postImageInput ? postImageInput.files[0] : null);
-   
-    AddPost(formData).then(response => {
-      console.log('Post added successfully:', response.data);
-      // Re-fetch posts and render the updated list
-      return getpost();
-    }).then(posts => {
-      render(posts);  // Render the updated posts
-    }).catch(error => {
-      console.error('Error adding post:', error);
-      alert('Failed to add post. Please try again.');
-    });
-   
-    // Close the modal after adding the post
-    var modal = bootstrap.Modal.getInstance(addPostModal);
-    if (modal) modal.hide();
+    // Only append image if a file is selected
+    if (postImageInput && postImageInput.files && postImageInput.files.length > 0) {
+      formData.append('image', postImageInput.files[0]);
+    }
+    closeModel(addPostModal);
     postNameInput.value = '';
     postBodyInput.value = '';
-    postImageInput.value = '';
+    if (postImageInput) postImageInput.value = '';
+    try {
+      await AddPost(formData);
+      showAlert('Post added successfully!', 'success');
+    } catch (e) {
+      closeModel(addPostModal);
+      console.error('AddPost error:', e);
+      showAlert(e.response.data.message, 'danger');
+
+    }
   });
 }
 
+
+
+function closeModel(name){
+var modal = bootstrap.Modal.getInstance(name);
+    if (modal) modal.hide();
+
+}
 export { handlelogin, handleRegistration, logout, handleAddPost };

@@ -19,7 +19,7 @@ export default function render(posts = []) {
     const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
     const BarHTML = `<!-- start nav bar -->
       <header
-        class="col-8 mx-auto shadow mt-3 mb-4 bg-body rounded sticky-top rounded-3"
+        class="col-8 mx-auto shadow mt-3 mb-4 bg-body rounded sticky-top rounded-3 headerApp"
       >
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-3">
           <div class="container-fluid">
@@ -69,11 +69,14 @@ export default function render(posts = []) {
           </div>
         </nav>
       </header>
-      <!-- end nav bar -->`
-    
+
+      <!-- end nav bar -->
+     
+  `
 
   let HTML = `
   ${BarHTML}
+  <div class='container show-alert' style='width: 69%;'></div>
   <!-- start main content -->
   ${token.logedin ? (
     ` 
@@ -83,6 +86,9 @@ export default function render(posts = []) {
       
 
       ${posts.map(post => `
+        <div class='alert'>
+        </div>
+
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
           <div class="card-header p-1 bg-light">
               <img
@@ -163,22 +169,18 @@ export default function render(posts = []) {
     )}
     `;
     ROOT.innerHTML = HTML;  // Inject the HTML content into the root element
-    HTML = '';  // Clear the HTML variable to free up memory
-     logout(); // Attach logout event after rendering
-    
+  HTML = '';  // Clear the HTML variable to free up memory
+  logout(); // Attach logout event after rendering
+  handleAddPost(); // Attach add post event after rendering
 }
 
 // Fetch posts and render them
+
 Promise.all([
   getpost(),
   handlelogin(),
   handleRegistration(),
-  handleAddPost()  // Initialize the add post modal handler
-   // Fetch posts from the API
+  handleAddPost()
 ]).then(([posts]) => {
-  render(posts);  // Render the main content of the app after fetching posts
-   // Initialize the login and registration modal handlers
-}).catch(error => {
-  console.error('Error during initialization:', error);
+  render(posts);
 });
-

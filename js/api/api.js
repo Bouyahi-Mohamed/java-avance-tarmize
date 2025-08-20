@@ -25,7 +25,6 @@ async function postLogin(info) {
     localStorage.setItem('token', JSON.stringify(params));
     // Re-render the app after successful login
     await getpost();  // Fetch posts again to update the UI
-    render();  // Re-render the main content of the app
     return response;
   } catch (error) {
     console.error('Error logging in:', error);
@@ -51,8 +50,7 @@ async function AddPost(info) {
     };
     const response = await axios.post('https://tarmeezacademy.com/api/v1/posts', info, { headers: header });
     // Re-render the app after successful post
-    getpost();  // Fetch posts again to update the UI
-    render();  // Re-render the main content of the app
+    await getpost();  // Fetch posts again to update the UI
     return response;
   } catch (error) {
     console.error('Error adding post:', error);
