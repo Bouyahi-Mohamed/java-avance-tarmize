@@ -1,5 +1,5 @@
 import { AddPost, getpost, postLogin, postRegistration }from './api.js';
-import render from '../App.js';
+import { updateUI } from '../utils/updateUi.js';
 // import alert function
 import { showAlert } from '../utils/alert.js';
 
@@ -11,7 +11,12 @@ function handlelogin() {
   // Listen for the login button click inside the modal
   var loginButton = loginModal.querySelector('.btn.btn-primary');
   if (!loginButton) return;
-  loginButton.addEventListener('click', async function () {
+
+  // Remove previous click event listeners by replacing the button with a clone
+  const newButton = loginButton.cloneNode(true);
+  loginButton.parentNode.replaceChild(newButton, loginButton);
+
+  newButton.addEventListener('click', async function () {
     var usernameInput = loginModal.querySelector('#username');
     var passwordInput = loginModal.querySelector('#password');
     if (!usernameInput || !passwordInput) return;
@@ -27,11 +32,14 @@ function handlelogin() {
     // Re-render the app to reflect the new login state
     try {
       await postLogin(info);
-      showAlert('Login successful!', 'success');
+      setTimeout(() => {
+        showAlert('Login successful!', 'success');
+      }, 2000);
     } catch (e) {
-      // await showAlert('Login failed. Please check your credentials and try again.');
-      getpost();
-      showAlert(e.response.data.message, 'danger');
+      await updateUI();
+      setTimeout(() => {
+        showAlert(e.response.data.message, 'danger');
+      }, 2000);
     }
   });
 }
@@ -42,7 +50,10 @@ function handleRegistration() {
   // Listen for the register button click inside the modal
   var registerButton = registerModal.querySelector('.btn.btn-primary');
   if (!registerButton) return;
-  registerButton.addEventListener('click', async function (event) {
+  // Remove previous listeners by replacing the button with a clone
+  const newButton = registerButton.cloneNode(true);
+  registerButton.parentNode.replaceChild(newButton, registerButton);
+  newButton.addEventListener('click', async function (event) {
     event.preventDefault();
     var usernameInput = registerModal.querySelector('#register-username');
     var nameInput = registerModal.querySelector('#register-name');
@@ -78,31 +89,44 @@ function handleRegistration() {
         // Await login and then render
         try {
           await postLogin(loginInfo);
-          showAlert('Registration successful!','success');
+          setTimeout(() => {
+            showAlert('Registration successful!', 'success');
+          }, 2000);
         } catch (e) {
           closeModel(registerModal)
-          getpost();
-          console.error('Login after registration error:', e);
-      showAlert(e.response.data.message, 'danger');
+          await updateUI();
+          setTimeout(() => {
+            showAlert(e.response.data.message, 'danger');
+          }, 2000);
         }
       }
     } catch (e) {
       closeModel(registerModal)
-      console.error('Registration error:', e.response.data.message);
-      showAlert(e.response.data.message, 'danger');
-      getpost();
+      await updateUI();
+      setTimeout(() => {
+        showAlert(e.response.data.message, 'danger');
+      }, 2000);
     }
   });
 }
 
  function logout() {
   let logout = document.querySelector('.logout');
-  if (logout) {
-    logout.addEventListener('click', async function () {
+    // Remove previous listeners by replacing the button with a clone
+  const newButton = logout.cloneNode(true);
+  logout.parentNode.replaceChild(newButton, logout);
+  if (newButton) {
+    newButton.addEventListener('click', async function () {
       localStorage.removeItem('token');
       // Re-render the app to reflect the logout state
-      getpost();
-      showAlert('Logout successful!','success');
+      updateUI().then(() => {
+        setTimeout(() => {
+          showAlert('Logout successful!', 'success');
+        }, 2000);
+      }).catch((error) => {
+        console.error('Error during logout:', error);
+        showAlert('Logout failed!', 'danger');
+      });
     });
   } else {
     console.log('Logout button not found');
@@ -141,8 +165,11 @@ function handleAddPost() {
     postBodyInput.value = '';
     if (postImageInput) postImageInput.value = '';
     try {
+      showAlert('Adding post...', 'info');
       await AddPost(formData);
-      showAlert('Post added successfully!', 'success');
+      setTimeout(() => {
+        showAlert('Post added successfully!', 'success');
+      }, 2000);
     } catch (e) {
       closeModel(addPostModal);
       console.error('AddPost error:', e);

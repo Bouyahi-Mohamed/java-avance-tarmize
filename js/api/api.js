@@ -1,5 +1,4 @@
-import render from '../App.js';  
-
+import { updateUI } from "../utils/updateUi.js";
 async function getpost() {
   try {
     const response = await axios.get('https://tarmeezacademy.com/api/v1/posts?limit=50');
@@ -20,7 +19,7 @@ async function postLogin(info) {
     };
     localStorage.setItem('token', JSON.stringify(params));
     // Re-render the app after successful login
-    await getpost();  // Fetch posts again to update the UI
+    await updateUI();  // Fetch posts and user data after login
     return response;
   } catch (error) {
     console.error('Error logging in:', error);
@@ -39,6 +38,8 @@ async function postRegistration(info) {
       logedin: true
     };
     localStorage.setItem('token', JSON.stringify(params));
+    // Re-render the app after successful registration
+    updateUI();
     return response;
   } catch (error) {
     console.error('Error registering:', error);
@@ -55,7 +56,7 @@ async function AddPost(info) {
     };
     const response = await axios.post('https://tarmeezacademy.com/api/v1/posts', info, { headers: header });
     // Re-render the app after successful post
-    await getpost();  // Fetch posts again to update the UI
+    updateUI();
     return response;
   } catch (error) {
     console.error('Error adding post:', error);

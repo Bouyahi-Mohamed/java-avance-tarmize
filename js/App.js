@@ -1,3 +1,4 @@
+import { updateUI } from "./utils/updateUi.js";
 import { getpost,getUserById } from "./api/api.js";
 import { handlelogin, handleRegistration,handleAddPost, logout, } from './api/Modal.js';
 
@@ -81,7 +82,7 @@ export default function render(posts = [], user = {}) {
 
   let HTML = `
   ${BarHTML}
-  <div class='container show-alert' style='width: 69%;'></div>
+  <div class='container show-alert' style='width: 69%; margin: 0 auto; margin-bottom: 10px;'></div>
   <!-- start main content -->
   ${token.logedin ? (
     ` 
@@ -181,12 +182,4 @@ export default function render(posts = [], user = {}) {
 
 // Fetch posts and render them
 
-Promise.all([
-  getpost(),
-  getUserById(JSON.parse(localStorage.getItem('token')).id)
-]).then(([posts, user]) => {
-  render(posts, user);
-  handlelogin();
-  handleRegistration();
-});
-
+updateUI();
