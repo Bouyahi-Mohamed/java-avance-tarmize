@@ -46,15 +46,18 @@ function handleRegistration() {
     event.preventDefault();
     var usernameInput = registerModal.querySelector('#register-username');
     var nameInput = registerModal.querySelector('#register-name');
+    var avatarInput = registerModal.querySelector('#Profile-img');
     var passwordInput = registerModal.querySelector('#register-password');
     var emailInput = registerModal.querySelector('#register-email');
     if (!usernameInput || !nameInput || !passwordInput || !emailInput) return;
-    let info = {
-      username: usernameInput.value,
-      name: nameInput.value,
-      password: passwordInput.value,
-      email: emailInput.value
-    };
+    let info = new FormData();
+    info.append('username', usernameInput.value);
+    info.append('name', nameInput.value);
+    if (avatarInput && avatarInput.files && avatarInput.files.length > 0) {
+      info.append('image', avatarInput.files[0]);
+    }
+    info.append('password', passwordInput.value);
+    info.append('email', emailInput.value);
     try {
       const response = await postRegistration(info);
       if (response) {
@@ -62,10 +65,14 @@ function handleRegistration() {
           username: usernameInput.value,
           password: passwordInput.value
         };
+        // uplod image profile in token 
+        
        
         // Close modal and clear fields before login
         closeModel(registerModal)
         usernameInput.value = '';
+        nameInput.value = '';
+        avatarInput.value = '';
         passwordInput.value = '';
         emailInput.value = '';
         // Await login and then render
@@ -75,12 +82,14 @@ function handleRegistration() {
         } catch (e) {
           closeModel(registerModal)
           getpost();
+          console.error('Login after registration error:', e);
       showAlert(e.response.data.message, 'danger');
         }
       }
     } catch (e) {
       closeModel(registerModal)
-     showAlert(e.response.data.message, 'danger');
+      console.error('Registration error:', e.response.data.message);
+      showAlert(e.response.data.message, 'danger');
       getpost();
     }
   });
@@ -92,7 +101,7 @@ function handleRegistration() {
     logout.addEventListener('click', async function () {
       localStorage.removeItem('token');
       // Re-render the app to reflect the logout state
-      await getpost();
+      getpost();
       showAlert('Logout successful!','success');
     });
   } else {

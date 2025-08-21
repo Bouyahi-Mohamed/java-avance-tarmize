@@ -1,22 +1,22 @@
-import { getpost } from "./api/api.js";
+import { getpost,getUserById } from "./api/api.js";
 import { handlelogin, handleRegistration,handleAddPost, logout, } from './api/Modal.js';
 
 // save token in localStorage
 if (!localStorage.getItem('token')) {
   let userToken = {
     token: '',
-    username: '',
+    id: '',
     logedin: false
   };
   localStorage.setItem('token', JSON.stringify(userToken));
 }
 
-export default function render(posts = []) {
+export default function render(posts = [], user = {}) {
   // Get the root element where the content will be rendered
   
     const ROOT = document.getElementById('root');
 
-    const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, username: '' };
+  const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, id: '' };
     const BarHTML = `<!-- start nav bar -->
       <header
         class="col-8 mx-auto shadow mt-3 mb-4 bg-body rounded sticky-top rounded-3 headerApp"
@@ -48,8 +48,13 @@ export default function render(posts = []) {
               </ul>
               <!-- user info login and register -->
               <div class="user-info ${token.logedin ? 'd-flex' : 'd-none'} align-items-center">
-                <i class="fas fa-user text-dark fs-5 me-2"></i>
-                <label class="me-2 fw-bold fs-6" for="">${token.username}</label>
+                <img
+                  src="${user ? user.data.profile_image : '../images/user.jpeg'}"
+                  class="user-icon rounded-circle img-thumbnail me-2"
+                  alt=""
+                  onerror="this.src='../images/user.jpeg'"
+                />
+                <label class="me-2 fw-bold fs-6" for="">${user ? user.data.username : 'error'}</label>
                 <button class="btn btn-outline-success logout" type="button">
                   logout
                 </button>
@@ -92,12 +97,12 @@ export default function render(posts = []) {
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
           <div class="card-header p-1 bg-light">
               <img
-                src="${post.author.profile_image || '../images/user.jpeg'}"
+                src="${post.author && post.author.profile_image ? post.author.profile_image : '../images/user.jpeg'}"
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
                 onerror="this.src='../images/user.jpeg'"
               />
-              <span class="fw-bold text-dark fs-5">@ ${post.author.username || 'yarab'}</span>
+              <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
             </div>
             <img
               src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
@@ -134,12 +139,12 @@ export default function render(posts = []) {
           <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
             <div class="card-header p-1 bg-light">
               <img
-                src="${post.author.profile_image || '../images/user.jpeg'}"
+                src="${post.author && post.author.profile_image ? post.author.profile_image : '../images/user.jpeg'}"
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
                 onerror="this.src='../images/user.jpeg'"
               />
-              <span class="fw-bold text-dark fs-5">@ ${post.author.username || 'yarab'}</span>
+              <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
             </div>
             <img
               src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
@@ -178,9 +183,10 @@ export default function render(posts = []) {
 
 Promise.all([
   getpost(),
-  handlelogin(),
-  handleRegistration(),
-  handleAddPost()
-]).then(([posts]) => {
-  render(posts);
+  getUserById(JSON.parse(localStorage.getItem('token')).id)
+]).then(([posts, user]) => {
+  render(posts, user);
+  handlelogin();
+  handleRegistration();
 });
+

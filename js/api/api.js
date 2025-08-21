@@ -1,17 +1,13 @@
 import render from '../App.js';  
 
-function getpost() {
-  // Fetch posts from the API
-  axios.get('https://tarmeezacademy.com/api/v1/posts?limit=50')
-    .then(response => {
-      let posts = response.data.data;  // Extract the posts data from the response
-
-      return render(posts);  // Call the render function with the fetched posts
-      
-    })
-    .catch(error => {
-      console.error('Error fetching posts:', error);
-    });
+async function getpost() {
+  try {
+    const response = await axios.get('https://tarmeezacademy.com/api/v1/posts?limit=50');
+    let posts = response.data.data;  // Extract the posts data from the response
+    return posts  // Call the render function with the fetched posts
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+  }
 }
 
 async function postLogin(info) {
@@ -19,7 +15,7 @@ async function postLogin(info) {
     const response = await axios.post('https://tarmeezacademy.com/api/v1/login', info);
     let params = {
       token: response.data.token,
-      username: response.data.user.username,
+      id: response.data.user.id,
       logedin: true
     };
     localStorage.setItem('token', JSON.stringify(params));
@@ -34,13 +30,22 @@ async function postLogin(info) {
 // postRegistration
 async function postRegistration(info) {
   try {
+    // Send a formdata 
     const response = await axios.post('https://tarmeezacademy.com/api/v1/register', info);
+    // update token
+    let params = {
+      token: response.data.token,
+      id: response.data.user.id,
+      logedin: true
+    };
+    localStorage.setItem('token', JSON.stringify(params));
     return response;
   } catch (error) {
     console.error('Error registering:', error);
     throw error;
   }
 }
+
 
 // add post 
 async function AddPost(info) {
@@ -58,4 +63,19 @@ async function AddPost(info) {
   }
 }
 
-export { getpost, postLogin, postRegistration, AddPost };
+// get user by id
+async function getUserById(id) {
+  try {
+    const response = await axios.get(`https://tarmeezacademy.com/api/v1/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    throw error;
+  }
+}
+
+export { getpost, postLogin, postRegistration, AddPost, getUserById };
