@@ -84,17 +84,19 @@ export function post(posts = []) {
                 src="${post.author && post.author.profile_image ? post.author.profile_image : '../images/user.jpeg'}"
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
-                onerror="this.src='../images/user.jpeg'"
+                onerror="this.src='../images/user.jpeg'
+               "
               />
               <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
             </div>
+            <div class="card-body bg-light">
             <img
               src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
-              class="card-img-top img-thumbnail"
+              class="card-img-top img-thumbnail tagImg btn"
               alt="..."
               onerror="this.src='../images/Kung-Fu-Panda.jpg'"
+              data-id=${post.id}
             />
-            <div class="card-body bg-light">
               <p class="card-text mt-0">
                 <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
               </p>
@@ -148,6 +150,13 @@ ${ lastPage > 5 ? `
   return paginationHTML;
 }
 
+export function footer() {
+  // Your footer code here
+}
+
+
+// function index
+
 export function handlePagination() {
   // Pagination event handlers
   const prevBtn = document.getElementById("prevPage");
@@ -186,6 +195,12 @@ export function handlePagination() {
 
 }
 
-export function footer() {
-  // Your footer code here
+
+export function detailPost() {
+const listItems = document.querySelectorAll('.tagImg');
+listItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    alert(`You clicked on tag: ${e.currentTarget.dataset.id}`);
+  });
+});
 }
