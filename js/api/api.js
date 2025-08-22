@@ -1,9 +1,10 @@
 import { updateUI } from "../utils/updateUi.js";
-async function getpost() {
+async function getpost(page=1) {
   try {
-    const response = await axios.get('https://tarmeezacademy.com/api/v1/posts?limit=50');
+    const response = await axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=10&page=${page}`);
     let posts = response.data.data;  // Extract the posts data from the response
-    return posts  // Call the render function with the fetched posts
+    window.currentPage = page;  // Update the current page globally
+    return posts;
   } catch (error) {
     console.error('Error fetching posts:', error);
   }
@@ -78,5 +79,15 @@ async function getUserById(id) {
     throw error;
   }
 }
+async function indexlastPage() {
+  try {
+    const response = await axios.get('https://tarmeezacademy.com/api/v1/posts/?limit=10');
+    let lastPage = response.data.meta.last_page;  // Extract the last page number from the response
+    return lastPage;
+  } catch (error) {
+    console.error('Error fetching last page:', error);
+    throw error;
+  }
+}
 
-export { getpost, postLogin, postRegistration, AddPost, getUserById };
+export { getpost, postLogin, postRegistration, AddPost, getUserById, indexlastPage };
