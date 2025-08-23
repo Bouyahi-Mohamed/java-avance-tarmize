@@ -1,6 +1,7 @@
 
-import { indexlastPage } from '../api/api.js';
+import { indexlastPage,getPostById } from '../api/api.js';
 import { updateUI } from '../utils/updateUi.js';
+import { renderDetailPost } from './detailPost.js';
 let currentPage = window.currentPage || 1;
 let lastPage;
 (async () => {
@@ -90,13 +91,15 @@ export function post(posts = []) {
               <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
             </div>
             <div class="card-body bg-light">
+          <a href="../html/detailPost.html" class=" tagImg" data-id="${post.id}">
             <img
               src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
               class="card-img-top img-thumbnail tagImg btn"
               alt="..."
               onerror="this.src='../images/Kung-Fu-Panda.jpg'"
-              data-id=${post.id}
+             
             />
+          </a>
               <p class="card-text mt-0">
                 <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
               </p>
@@ -197,10 +200,15 @@ export function handlePagination() {
 
 
 export function detailPost() {
-const listItems = document.querySelectorAll('.tagImg');
-listItems.forEach(item => {
-  item.addEventListener('click', (e) => {
-    alert(`You clicked on tag: ${e.currentTarget.dataset.id}`);
+  const listItems = document.querySelectorAll('.tagImg');
+  listItems.forEach(item => {
+    item.addEventListener('click',  (e) => {
+      e.preventDefault();
+      const postId = e.currentTarget.dataset.id;
+      console.log(postId);
+      window.location.href='../html/detailPost.html';
+      localStorage.setItem('postId', postId);
+
+    });
   });
-});
 }

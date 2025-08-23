@@ -1,4 +1,4 @@
-import { updateUI } from "../utils/updateUi.js";
+import { updateUI } from '../utils/updateUi.js';
 async function getpost(page=1) {
   try {
     const response = await axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=10&page=${page}`);
@@ -89,5 +89,29 @@ async function indexlastPage() {
     throw error;
   }
 }
+ function getPostById(id) {
+  return axios.get(`https://tarmeezacademy.com/api/v1/posts/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Error fetching post by ID:', error);
+      throw error;
+    });
+}
+function addCommentToPost(postId, commentBody) {
+  const token = JSON.parse(localStorage.getItem('token')).token;
+  return axios.post(`https://tarmeezacademy.com/api/v1/posts/${postId}/comments`, { body: commentBody }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      updateUI();
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Error adding comment:', error);
+      throw error;
+    });
+}
 
-export { getpost, postLogin, postRegistration, AddPost, getUserById, indexlastPage };
+export { getpost, postLogin, postRegistration, AddPost, getUserById, indexlastPage, getPostById, addCommentToPost };
