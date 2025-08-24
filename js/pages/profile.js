@@ -51,7 +51,7 @@ function post(posts = [], user) {
               </button>
               <div class="collapse" id="showoptions${post.id}">
                 <div class="d-flex gap-3">
-                    <div class="updatePost" data-update="${post.id}" data-bs-toggle="modal" data-bs-target="#editPostModal">
+                    <div class="updatePost" data-update="${post.id}" >
                     <button class="btn btn-info" type="button">
                         <i class="fa-solid fa-pencil"></i>
                     </button>
@@ -129,12 +129,15 @@ function post(posts = [], user) {
   });
 }
 
-function handleUpdatePost() {
+async function handleUpdatePost() {
   const btnUpdate = document.querySelectorAll(`.updatePost`);
   btnUpdate.forEach(btn => {
     btn.addEventListener("click", async (e) => {
+        let modal = new bootstrap.Modal(document.getElementById('editPostModal'));
+        modal.toggle();
+        modal.title = "Edit Post";
         let idPost = e.currentTarget.dataset.update;
-       UpdateProfilePost(idPost);
+       await UpdateProfilePost(idPost);
     });
   });
 }

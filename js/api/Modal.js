@@ -188,7 +188,6 @@ function handleAddPost(idPostUpdate) {
   // Remove previous listeners by replacing the button with a clone
   const newButton = updatePostButton.cloneNode(true);
   updatePostButton.parentNode.replaceChild(newButton, updatePostButton);
-
   newButton.addEventListener('click', async function (event) {
     event.preventDefault();
     var updateNameInput = updatePostModal.querySelector('#update-name');
@@ -202,22 +201,19 @@ function handleAddPost(idPostUpdate) {
     if (updateImageInput && updateImageInput.files && updateImageInput.files.length > 0) {
       formDataUpdate.append('image', updateImageInput.files[0]);
     }
+    formDataUpdate.append('_method', 'PUT');
     try {
+      console.log('FormData prepared for update:', formDataUpdate);
       await updatePost(idPostUpdate, formDataUpdate);
       closeModel(updatePostModal);
       updateNameInput.value = '';
       updateBodyInput.value = '';
       if (updateImageInput) updateImageInput.value = '';
       await updateUI();
-      setTimeout(() => {
-        showAlert('Post updated successfully!', 'success');
-      }, 500);
+      
     } catch (e) {
       closeModel(updatePostModal);
       console.error('UpdatePost error:', e);
-      setTimeout(() => {
-        showAlert(e.response?.data?.message || 'Update failed!', 'danger');
-      }, 500);
     }
   });
 }

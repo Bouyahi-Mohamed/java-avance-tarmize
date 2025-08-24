@@ -161,7 +161,7 @@ export function deletePost(postId) {
 async function updatePost(postId, updatedData) {
   try {
     const token = JSON.parse(localStorage.getItem('token')).token;
-    const response = await axios.put(`https://tarmeezacademy.com/api/v1/posts/${postId}`, updatedData, {
+    const response = await axios.post(`https://tarmeezacademy.com/api/v1/posts/${postId}`, updatedData, {
       headers: {
         Authorization: `Bearer ${token}`
       }
