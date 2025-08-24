@@ -91,7 +91,7 @@ export function post(posts = []) {
               <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
             </div>
             <div class="card-body bg-light">
-          <a href="../html/detailPost.html" class=" tagImg" data-id="${post.id}">
+          <div class=" tagImg" data-id="${post.id}">
             <img
               src="${post.image || '../images/Kung-Fu-Panda.jpg'}"
               class="card-img-top img-thumbnail tagImg btn"
@@ -99,7 +99,7 @@ export function post(posts = []) {
               onerror="this.src='../images/Kung-Fu-Panda.jpg'"
              
             />
-          </a>
+          </div>
               <p class="card-text mt-0">
                 <span class="fw-lighter text-dark-50">${post.created_at || '3 min ago'}</span>
               </p>
@@ -205,9 +205,7 @@ export function detailPost() {
     item.addEventListener('click',  (e) => {
       e.preventDefault();
       const postId = e.currentTarget.dataset.id;
-      console.log(postId);
-      window.location.href='../html/detailPost.html';
-      localStorage.setItem('postId', postId);
+      window.location='../html/detailPost.html?postId=' + postId;
 
     });
   });

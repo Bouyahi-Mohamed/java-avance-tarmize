@@ -6,10 +6,9 @@ export function updateUI(index = 1) {
 window.scrollTo({ top: 0, behavior: "auto" });
   return new Promise((resolve) => {
   const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, id: '' };
-  const postId = localStorage.getItem('postId') || 1;
   if (window.location.pathname.endsWith('detailPost.html')) {
     Promise.all([
-      getPostById(postId),
+      getPostById(),
       getUserById(token.id)
     ]).then(([post,user]) => {
       renderDetailPost(post,user);

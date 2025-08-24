@@ -89,8 +89,11 @@ async function indexlastPage() {
     throw error;
   }
 }
- function getPostById(id) {
-  return axios.get(`https://tarmeezacademy.com/api/v1/posts/${id}`)
+ function getPostById() {
+  const url = window.location.href; 
+  const params = new URLSearchParams(new URL(url).search);
+  const postId = params.get("postId");
+  return axios.get(`https://tarmeezacademy.com/api/v1/posts/${postId}`)
     .then(response => response.data)
     .catch(error => {
       console.error('Error fetching post by ID:', error);
