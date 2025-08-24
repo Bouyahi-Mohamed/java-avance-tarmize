@@ -9,6 +9,15 @@ async function getpost(page=1) {
     console.error('Error fetching posts:', error);
   }
 }
+async function getAllpost() {
+  try {
+    const response = await axios.get(`https://tarmeezacademy.com/api/v1/posts?limit=100`);
+    let posts = response.data.data;  // Extract the posts data from the response
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+  }
+}
 
 async function postLogin(info) {
   try {
@@ -117,4 +126,52 @@ function addCommentToPost(postId, commentBody) {
     });
 }
 
-export { getpost, postLogin, postRegistration, AddPost, getUserById, indexlastPage, getPostById, addCommentToPost };
+// get posts user
+ async function getPostsUser() {
+  try {
+    const idUser = JSON.parse(localStorage.getItem('token')).id;
+    const posts = await getAllpost();
+    let userPosts = posts.filter(post => {
+      return post.author.id === idUser;
+    });
+    return userPosts;
+  } catch (error) {
+    console.error('Error fetching posts by user ID:', error);
+    throw error;
+  }
+}
+// delete post 
+export function deletePost(postId) {
+  const token = JSON.parse(localStorage.getItem('token')).token;
+  return axios.delete(`https://tarmeezacademy.com/api/v1/posts/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      updateUI();
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Error deleting post:', error);
+      throw error;
+    });
+}
+// update post
+async function updatePost(postId, updatedData) {
+  try {
+    const token = JSON.parse(localStorage.getItem('token')).token;
+    const response = await axios.put(`https://tarmeezacademy.com/api/v1/posts/${postId}`, updatedData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    updateUI();
+    return response.data;
+  } catch (error) {
+    console.error('Error updating post:', error);
+    throw error;
+  }
+}
+
+export { getpost, postLogin, postRegistration, AddPost, getUserById, indexlastPage, getPostById, addCommentToPost, getPostsUser ,updatePost};

@@ -1,4 +1,4 @@
-import { AddPost, getpost, postLogin, postRegistration }from './api.js';
+import { AddPost, getpost, postLogin, postRegistration,updatePost }from './api.js';
 import { updateUI } from '../utils/updateUi.js';
 // import alert function
 import { showAlert } from '../utils/alert.js';
@@ -133,15 +133,11 @@ function handleRegistration() {
   }
 }
 // Handle adding a new post
-function handleAddPost() {
+function handleAddPost(idPostUpdate) {
   var addPostModal = document.getElementById('addPostModal');
-  if (!addPostModal) {
-    return;
-  }
+  if (!addPostModal) return;
   var addPostButton = addPostModal.querySelector('.add-post-btn');
-  if (!addPostButton) {
-    return;
-  }
+  if (!addPostButton) return;
 
   // Remove previous listeners by replacing the button with a clone
   const newButton = addPostButton.cloneNode(true);
@@ -169,12 +165,59 @@ function handleAddPost() {
       await AddPost(formData);
       setTimeout(() => {
         showAlert('Post added successfully!', 'success');
-      }, 2000);
+      }, 500);
     } catch (e) {
       closeModel(addPostModal);
       console.error('AddPost error:', e);
-      showAlert(e.response.data.message, 'danger');
+      setTimeout(() => {
+        showAlert(e?.response?.data?.message || 'Add post failed!', 'danger');
+      }, 500);
+    }
+  });
+}
 
+
+//  update post 
+// Handle adding a new post
+ function UpdateProfilePost(idPostUpdate) {
+  var updatePostModal = document.getElementById('editPostModal');
+  if (!updatePostModal) return;
+  var updatePostButton = updatePostModal.querySelector('.update-post-btn');
+  if (!updatePostButton) return;
+
+  // Remove previous listeners by replacing the button with a clone
+  const newButton = updatePostButton.cloneNode(true);
+  updatePostButton.parentNode.replaceChild(newButton, updatePostButton);
+
+  newButton.addEventListener('click', async function (event) {
+    event.preventDefault();
+    var updateNameInput = updatePostModal.querySelector('#update-name');
+    var updateBodyInput = updatePostModal.querySelector('#update-body');
+    var updateImageInput = updatePostModal.querySelector('#update-img');
+    if (!updateNameInput || !updateBodyInput) return;
+    let formDataUpdate = new FormData();
+    formDataUpdate.append('title', updateNameInput.value);
+    formDataUpdate.append('body', updateBodyInput.value);
+    // Only append image if a file is selected
+    if (updateImageInput && updateImageInput.files && updateImageInput.files.length > 0) {
+      formDataUpdate.append('image', updateImageInput.files[0]);
+    }
+    try {
+      await updatePost(idPostUpdate, formDataUpdate);
+      closeModel(updatePostModal);
+      updateNameInput.value = '';
+      updateBodyInput.value = '';
+      if (updateImageInput) updateImageInput.value = '';
+      await updateUI();
+      setTimeout(() => {
+        showAlert('Post updated successfully!', 'success');
+      }, 500);
+    } catch (e) {
+      closeModel(updatePostModal);
+      console.error('UpdatePost error:', e);
+      setTimeout(() => {
+        showAlert(e.response?.data?.message || 'Update failed!', 'danger');
+      }, 500);
     }
   });
 }
@@ -186,4 +229,4 @@ var modal = bootstrap.Modal.getInstance(name);
     if (modal) modal.hide();
 
 }
-export { handlelogin, handleRegistration, logout, handleAddPost };
+export { handlelogin, handleRegistration, logout, handleAddPost, UpdateProfilePost };

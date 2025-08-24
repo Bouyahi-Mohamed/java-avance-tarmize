@@ -1,5 +1,6 @@
-import { getpost,getUserById ,getPostById} from "../api/api.js";
+import { getpost,getUserById ,getPostById, getPostsUser} from "../api/api.js";
 import { handlelogin, handleRegistration,handleAddPost, logout, } from '../api/Modal.js';
+import { renderProfilePage } from "../pages/profile.js";
 import render from '../App.js';
 import { renderDetailPost } from "../pages/detailPost.js";
 export function updateUI(index = 1) {
@@ -14,7 +15,20 @@ window.scrollTo({ top: 0, behavior: "auto" });
       renderDetailPost(post,user);
     });
   }
-  else{
+  else if (window.location.pathname.endsWith('profile.html')) {
+    if (token.logedin && token.id) {
+      Promise.all([
+        getPostsUser(),
+        getUserById(token.id)
+      ]).then(([posts,user]) => {
+        renderProfilePage(posts,user);
+        handlelogin();
+        handleRegistration();
+        handleAddPost();
+        logout();
+    });
+  }
+  }else{
   if (token.logedin && token.id) {
     Promise.all([
       getpost(index),

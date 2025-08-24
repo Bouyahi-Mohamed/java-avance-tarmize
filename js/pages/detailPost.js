@@ -1,8 +1,41 @@
 import { addCommentToPost } from "../api/api.js";
 export function renderDetailPost(post = 1, user) {
-  const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, id: '' };
+    
   const detailPostContainer = document.getElementById("detailPost");
-  detailPostContainer.innerHTML = `
+  let HTML = `
+    ${postDetail(post, user)}
+  `;
+  detailPostContainer.innerHTML = HTML;
+  handleAddComment();
+  HTML = "";
+};
+
+export function handleAddComment() {
+  const addCommentButton = document.getElementById("addComment");
+  const commentaireInput = document.getElementById("commentaire");
+
+  addCommentButton.addEventListener("click", () => {
+    const commentBody = commentaireInput.value.trim();
+    const postId = addCommentButton.dataset.id;
+
+    if (commentBody) {
+      // Call the API to add the comment
+      commentaireInput.value = ""; // Clear the input
+      addCommentToPost(postId, commentBody);
+    }
+  });
+}
+
+
+
+export function postDetail(post,user){
+ const token = JSON.parse(localStorage.getItem("token")) || {
+    logedin: false,
+    id: "",
+  };
+  let userProfile = user || {};
+  console.log(userProfile);
+  let detailPostContainer = `
   <main class="container d-flex justify-content-center justify-items-center mt-3 w-75">
 
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4 ">
@@ -96,7 +129,7 @@ export function renderDetailPost(post = 1, user) {
           <div class="mb-3 mt-3 d-flex align-items-center gap-2">
             <label for="commentaire" class="form-label ">
               <img
-                src="${user ? user.data.profile_image : '../images/user.jpeg'}"
+                src="${user.data.profile_image || '../images/user.jpeg'}"
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
               />
@@ -109,21 +142,6 @@ export function renderDetailPost(post = 1, user) {
         </main>`
       :``}
   `;
-  handleAddComment();
+  return detailPostContainer;
 }
 
-export function handleAddComment() {
-  const addCommentButton = document.getElementById("addComment");
-  const commentaireInput = document.getElementById("commentaire");
-
-  addCommentButton.addEventListener("click", () => {
-    const commentBody = commentaireInput.value.trim();
-    const postId = addCommentButton.dataset.id;
-
-    if (commentBody) {
-      // Call the API to add the comment
-      commentaireInput.value = ""; // Clear the input
-      addCommentToPost(postId, commentBody);
-    }
-  });
-}

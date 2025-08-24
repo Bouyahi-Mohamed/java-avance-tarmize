@@ -1,7 +1,6 @@
 
-import { indexlastPage,getPostById } from '../api/api.js';
+import { indexlastPage} from '../api/api.js';
 import { updateUI } from '../utils/updateUi.js';
-import { renderDetailPost } from './detailPost.js';
 let currentPage = window.currentPage || 1;
 let lastPage;
 (async () => {
@@ -15,7 +14,7 @@ export function header(user = {}) {
       >
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-3">
           <div class="container-fluid">
-            <a class="navbar-brand" href="#">tarmize</a>
+            <a class="navbar-brand" href="../html/index.html">tarmize</a>
             <button
               class="navbar-toggler"
               type="button"
@@ -30,12 +29,12 @@ export function header(user = {}) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#"
+                  <a class="nav-link active" aria-current="page" href="../html/index.html"
                     >Home</a
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="#">profile</a>
+                  <a class="nav-link" aria-current="page" href="../html/profile.html">profile</a>
                 </li>
               </ul>
               <!-- user info login and register -->
