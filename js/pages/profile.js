@@ -124,7 +124,12 @@ function post(posts = [], user) {
   btnDelete.forEach(btn => {
     btn.addEventListener("click", async (e) => {
         let idPost = e.currentTarget.dataset.delete;
-        await deletePost(idPost);
+        let modal = new bootstrap.Modal(document.getElementById('validateDeleteModal'));
+        modal.show();
+        document.querySelector('.delete-post-btn').addEventListener("click", async () => {
+            await deletePost(idPost);
+            modal.hide();
+        });
     });
   });
 }
