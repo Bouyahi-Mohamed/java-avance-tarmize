@@ -65,8 +65,11 @@ export function header(user = {}) {
           </div>
         </nav>
       </header>
-
       <!-- end nav bar -->
+      <!-- start alert  -->
+    
+     <div class='container show-alert' style='width: 69%; margin: 0 auto; margin-bottom: 10px;'></div>
+  <!-- end alert -->
      
   `
 }

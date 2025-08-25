@@ -32,8 +32,7 @@ export default function render(posts = [], user = {}) {
 
   let HTML = `
   ${header(user)}
-  <div class='container show-alert' style='width: 69%; margin: 0 auto; margin-bottom: 10px;'></div>
-  <!-- start main content -->
+ 
   ${
     token.logedin
       ? ` 

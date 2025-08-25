@@ -1,6 +1,7 @@
 import { header } from "./index.js";
-import { deletePost } from "../api/api.js";
-import { UpdateProfilePost} from "../api/Modal.js";
+import { deletePost , updatePost} from "../api/api.js";
+import { UpdateProfilePost,logout} from "../api/Modal.js";
+import { showAlert } from "../utils/alert.js";
 export function renderProfilePage(posts, user) {
     const root = document.getElementById("root-profile");
     let HTML = `
@@ -10,6 +11,7 @@ export function renderProfilePage(posts, user) {
   root.innerHTML = HTML;
   handleDeletePost();
   handleUpdatePost();
+  logout(); // Attach logout event after rendering
   HTML='';
 }
 function post(posts = [], user) {
@@ -18,6 +20,7 @@ function post(posts = [], user) {
         id: "",
     };
     let indexPosts = `
+      
       <main class="container">
       ${posts
             .map(
@@ -127,22 +130,35 @@ function post(posts = [], user) {
         let modal = new bootstrap.Modal(document.getElementById('validateDeleteModal'));
         modal.show();
         document.querySelector('.delete-post-btn').addEventListener("click", async () => {
-            await deletePost(idPost);
-            modal.hide();
+          await deletePost(idPost);
+          setTimeout(() => {
+            showAlert('Post deleted successfully!', 'success');
+          }, 500);
+          modal.hide();
         });
     });
   });
 }
 
-async function handleUpdatePost() {
+export  function handleUpdatePost() {
   const btnUpdate = document.querySelectorAll(`.updatePost`);
   btnUpdate.forEach(btn => {
     btn.addEventListener("click", async (e) => {
-        let modal = new bootstrap.Modal(document.getElementById('editPostModal'));
-        modal.toggle();
-        modal.title = "Edit Post";
-        let idPost = e.currentTarget.dataset.update;
-       await UpdateProfilePost(idPost);
+      let modal = new bootstrap.Modal(document.getElementById('editPostModal'));
+      modal.show();
+      let idPost = e.currentTarget.dataset.update;
+      let data = await UpdateProfilePost();
+      // Close the modal
+      modal.hide();
+      try {
+        await updatePost(idPost, data);
+        setTimeout(() => {
+          showAlert('Post updated successfully!', 'success');
+        }, 500);
+      } catch (e) {
+        console.error('UpdatePost error:', e);
+        showAlert(e.response.data.message || 'Update post failed!', 'danger');
+      }
     });
   });
 }

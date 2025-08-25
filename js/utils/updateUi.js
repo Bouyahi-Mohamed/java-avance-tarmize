@@ -3,6 +3,7 @@ import { handlelogin, handleRegistration,handleAddPost, logout, } from '../api/M
 import { renderProfilePage } from "../pages/profile.js";
 import render from '../App.js';
 import { renderDetailPost } from "../pages/detailPost.js";
+import { showAlert } from "./alert.js";
 export function updateUI(index = 1) {
 window.scrollTo({ top: 0, behavior: "auto" });
   return new Promise((resolve) => {
@@ -22,11 +23,13 @@ window.scrollTo({ top: 0, behavior: "auto" });
         getUserById(token.id)
       ]).then(([posts,user]) => {
         renderProfilePage(posts,user);
-        handlelogin();
-        handleRegistration();
-        handleAddPost();
         logout();
     });
+  } else {
+    showAlert('You must be logged in to view the profile page.', 'warning');
+    setTimeout(() => {
+      window.location.href = '../html/index.html';
+    }, 2000);
   }
   }else{
   if (token.logedin && token.id) {

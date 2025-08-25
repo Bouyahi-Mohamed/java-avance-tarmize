@@ -176,50 +176,34 @@ function handleAddPost(idPostUpdate) {
   });
 }
 
+async function UpdateProfilePost() {
+  return new Promise((resolve) => {
+    var updatePostModal = document.getElementById('editPostModal');
+    if (!updatePostModal) return;
+    var updatePostButton = updatePostModal.querySelector('.update-post-btn');
+    if (!updatePostButton) return;
 
-//  update post 
-// Handle adding a new post
- function UpdateProfilePost(idPostUpdate) {
-  var updatePostModal = document.getElementById('editPostModal');
-  if (!updatePostModal) return;
-  var updatePostButton = updatePostModal.querySelector('.update-post-btn');
-  if (!updatePostButton) return;
-
-  // Remove previous listeners by replacing the button with a clone
-  const newButton = updatePostButton.cloneNode(true);
-  updatePostButton.parentNode.replaceChild(newButton, updatePostButton);
-  newButton.addEventListener('click', async function (event) {
-    event.preventDefault();
-    var updateNameInput = updatePostModal.querySelector('#update-name');
-    var updateBodyInput = updatePostModal.querySelector('#update-body');
-    var updateImageInput = updatePostModal.querySelector('#update-img');
-    if (!updateNameInput || !updateBodyInput) return;
-    let formDataUpdate = new FormData();
-    formDataUpdate.append('title', updateNameInput.value);
-    formDataUpdate.append('body', updateBodyInput.value);
-    // Only append image if a file is selected
-    if (updateImageInput && updateImageInput.files && updateImageInput.files.length > 0) {
-      formDataUpdate.append('image', updateImageInput.files[0]);
-    }
-    formDataUpdate.append('_method', 'PUT');
-    try {
-      console.log('FormData prepared for update:', formDataUpdate);
-      await updatePost(idPostUpdate, formDataUpdate);
-      closeModel(updatePostModal);
-      updateNameInput.value = '';
-      updateBodyInput.value = '';
-      if (updateImageInput) updateImageInput.value = '';
-      await updateUI();
-      
-    } catch (e) {
-      closeModel(updatePostModal);
-      console.error('UpdatePost error:', e);
-    }
+    // Remove previous listeners by replacing the button with a clone
+    const newButton = updatePostButton.cloneNode(true);
+    updatePostButton.parentNode.replaceChild(newButton, updatePostButton);
+    newButton.addEventListener('click', async function (event) {
+      event.preventDefault();
+      var updateNameInput = updatePostModal.querySelector('#update-name');
+      var updateBodyInput = updatePostModal.querySelector('#update-body');
+      var updateImageInput = updatePostModal.querySelector('#update-img');
+      if (!updateNameInput || !updateBodyInput) return;
+      let formDataUpdate = new FormData();
+      formDataUpdate.append('title', updateNameInput.value);
+      formDataUpdate.append('body', updateBodyInput.value);
+      // Only append image if a file is selected
+      if (updateImageInput && updateImageInput.files && updateImageInput.files.length > 0) {
+        formDataUpdate.append('image', updateImageInput.files[0]);
+      }
+      formDataUpdate.append('_method', 'PUT');
+      resolve(formDataUpdate);
+    });
   });
 }
-
-
-
 function closeModel(name){
 var modal = bootstrap.Modal.getInstance(name);
     if (modal) modal.hide();
