@@ -5,15 +5,14 @@ import render from '../App.js';
 import { renderDetailPost } from "../pages/detailPost.js";
 import { showAlert } from "./alert.js";
 export function updateUI(index = 1) {
-window.scrollTo({ top: 0, behavior: "auto" });
-  return new Promise((resolve) => {
+  window.scrollTo({ top: 0, behavior: "auto" });
   const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, id: '' };
   if (window.location.pathname.endsWith('detailPost.html')) {
     Promise.all([
       getPostById(),
       getUserById(token.id)
-    ]).then(([post,user]) => {
-      renderDetailPost(post,user);
+    ]).then(([post, user]) => {
+      renderDetailPost(post, user);
     });
   }
   else if (window.location.pathname.endsWith('profile.html')) {
@@ -21,39 +20,37 @@ window.scrollTo({ top: 0, behavior: "auto" });
       Promise.all([
         getPostsUser(),
         getUserById(token.id)
-      ]).then(([posts,user]) => {
-        renderProfilePage(posts,user);
+      ]).then(([posts, user]) => {
+        renderProfilePage(posts, user);
         logout();
-    });
+      });
+    } else {
+      showAlert('You must be logged in to view the profile page.', 'warning');
+      setTimeout(() => {
+        window.location.href = '../html/index.html';
+      }, 2000);
+    }
   } else {
-    showAlert('You must be logged in to view the profile page.', 'warning');
-    setTimeout(() => {
-      window.location.href = '../html/index.html';
-    }, 2000);
+    if (token.logedin && token.id) {
+      Promise.all([
+        getpost(index),
+        getUserById(token.id)
+      ]).then(([posts, user]) => {
+        render(posts, user);
+        handlelogin();
+        handleRegistration();
+        handleAddPost();
+        logout();
+      });
+    } else {
+      getpost().then(posts => {
+        render(posts, null);
+        handlelogin();
+        handleRegistration();
+        handleAddPost();
+        logout();
+      });
+    }
   }
-  }else{
-  if (token.logedin && token.id) {
-    Promise.all([
-      getpost(index),
-      getUserById(token.id)
-    ]).then(([posts, user]) => {
-      render(posts, user);
-      handlelogin();
-      handleRegistration();
-      handleAddPost();
-      logout();
-    });
-  } else {
-    getpost().then(posts => {
-      render(posts, null);
-      handlelogin();
-      handleRegistration();
-      handleAddPost();
-      logout();
-    });
-  }
-  resolve();
-  }
-  });
 }
 

@@ -110,23 +110,24 @@ function handleRegistration() {
   });
 }
 
- function logout() {
+function logout() {
   let logout = document.querySelector('.logout');
-    // Remove previous listeners by replacing the button with a clone
+  // Remove previous listeners by replacing the button with a clone
   const newButton = logout.cloneNode(true);
   logout.parentNode.replaceChild(newButton, logout);
   if (newButton) {
     newButton.addEventListener('click', async function () {
-      localStorage.removeItem('token');
-      // Re-render the app to reflect the logout state
-      updateUI().then(() => {
+      try {
+        localStorage.removeItem('token');
+        // Re-render the app to reflect the logout state
+        updateUI();
         setTimeout(() => {
           showAlert('Logout successful!', 'success');
-        }, 2000);
-      }).catch((error) => {
+        }, 2500);
+      } catch (error) {
         console.error('Error during logout:', error);
         showAlert('Logout failed!', 'danger');
-      });
+      }
     });
   } else {
     console.log('Logout button not found');
@@ -161,11 +162,11 @@ function handleAddPost(idPostUpdate) {
     postBodyInput.value = '';
     if (postImageInput) postImageInput.value = '';
     try {
-      showAlert('Adding post...', 'info');
+      showAlert('Adding post...', 'info', false);
       await AddPost(formData);
       setTimeout(() => {
         showAlert('Post added successfully!', 'success');
-      }, 500);
+      }, 2500);
     } catch (e) {
       closeModel(addPostModal);
       console.error('AddPost error:', e);

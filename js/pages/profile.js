@@ -2,6 +2,7 @@ import { header } from "./index.js";
 import { deletePost , updatePost} from "../api/api.js";
 import { UpdateProfilePost,logout} from "../api/Modal.js";
 import { showAlert } from "../utils/alert.js";
+import { updateUI } from "../utils/updateUi.js";
 export function renderProfilePage(posts, user) {
     const root = document.getElementById("root-profile");
     let HTML = `
@@ -148,13 +149,24 @@ export  function handleUpdatePost() {
       modal.show();
       let idPost = e.currentTarget.dataset.update;
       let data = await UpdateProfilePost();
+      if (!data) {
+        modal.hide();
+        return;
+      }
       // Close the modal
       modal.hide();
+      showAlert('loading ...', 'info',false);
+     
       try {
         await updatePost(idPost, data);
-        setTimeout(() => {
-          showAlert('Post updated successfully!', 'success');
-        }, 500);
+        await Promise.all([
+          updateUI(),
+          
+        ]).then(() => {
+          setTimeout(() => {
+            showAlert('Post updated successfully!', 'success');
+          }, 2500);
+        });
       } catch (e) {
         console.error('UpdatePost error:', e);
         showAlert(e.response.data.message || 'Update post failed!', 'danger');
