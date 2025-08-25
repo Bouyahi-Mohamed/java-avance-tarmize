@@ -116,10 +116,7 @@ function addCommentToPost(postId, commentBody) {
       Authorization: `Bearer ${token}`
     }
   })
-    .then(response => {
-      updateUI();
-      return response.data;
-    })
+    .then(response => response.data)
     .catch(error => {
       console.error('Error adding comment:', error);
       throw error;
@@ -166,7 +163,6 @@ async function updatePost(postId, updatedData) {
         Authorization: `Bearer ${token}`
       }
     });
-    updateUI();
     return response.data;
   } catch (error) {
     console.error('Error updating post:', error);

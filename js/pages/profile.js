@@ -132,10 +132,8 @@ function post(posts = [], user) {
         modal.show();
         document.querySelector('.delete-post-btn').addEventListener("click", async () => {
           await deletePost(idPost);
-          setTimeout(() => {
-            showAlert('Post deleted successfully!', 'success');
-          }, 500);
           modal.hide();
+          showAlert('Post deleted successfully!', 'success');
         });
     });
   });
@@ -159,14 +157,9 @@ export  function handleUpdatePost() {
      
       try {
         await updatePost(idPost, data);
-        await Promise.all([
+       
           updateUI(),
-          
-        ]).then(() => {
-          setTimeout(() => {
             showAlert('Post updated successfully!', 'success');
-          }, 2500);
-        });
       } catch (e) {
         console.error('UpdatePost error:', e);
         showAlert(e.response.data.message || 'Update post failed!', 'danger');

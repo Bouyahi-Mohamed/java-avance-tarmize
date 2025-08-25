@@ -1,4 +1,4 @@
-import { AddPost, getpost, postLogin, postRegistration,updatePost }from './api.js';
+import { AddPost, postLogin, postRegistration } from './api.js';
 import { updateUI } from '../utils/updateUi.js';
 // import alert function
 import { showAlert } from '../utils/alert.js';
@@ -32,14 +32,12 @@ function handlelogin() {
     // Re-render the app to reflect the new login state
     try {
       await postLogin(info);
+      showAlert('Login successful!', 'success');
       setTimeout(() => {
-        showAlert('Login successful!', 'success');
-      }, 2000);
+        updateUI();
+      }, 1000);
     } catch (e) {
-      await updateUI();
-      setTimeout(() => {
-        showAlert(e.response.data.message, 'danger');
-      }, 2000);
+      showAlert(e.response.data.message, 'danger');
     }
   });
 }
@@ -89,20 +87,18 @@ function handleRegistration() {
         // Await login and then render
         try {
           await postLogin(loginInfo);
+          showAlert('Registration successful!', 'success');
           setTimeout(() => {
-            showAlert('Registration successful!', 'success');
-          }, 2000);
+            updateUI();
+          }, 1000);
         } catch (e) {
           closeModel(registerModal)
-          await updateUI();
-          setTimeout(() => {
-            showAlert(e.response.data.message, 'danger');
-          }, 2000);
+          showAlert(e.response.data.message, 'danger');
         }
       }
     } catch (e) {
       closeModel(registerModal)
-      await updateUI();
+      updateUI();
       setTimeout(() => {
         showAlert(e.response.data.message, 'danger');
       }, 2000);
@@ -120,10 +116,10 @@ function logout() {
       try {
         localStorage.removeItem('token');
         // Re-render the app to reflect the logout state
-        updateUI();
+        showAlert('Logout successful!', 'success');
         setTimeout(() => {
-          showAlert('Logout successful!', 'success');
-        }, 2500);
+          updateUI();
+        }, 1000);
       } catch (error) {
         console.error('Error during logout:', error);
         showAlert('Logout failed!', 'danger');
@@ -134,7 +130,7 @@ function logout() {
   }
 }
 // Handle adding a new post
-function handleAddPost(idPostUpdate) {
+function handleAddPost() {
   var addPostModal = document.getElementById('addPostModal');
   if (!addPostModal) return;
   var addPostButton = addPostModal.querySelector('.add-post-btn');
@@ -164,9 +160,10 @@ function handleAddPost(idPostUpdate) {
     try {
       showAlert('Adding post...', 'info', false);
       await AddPost(formData);
+      showAlert('Post added successfully!', 'success');
       setTimeout(() => {
-        showAlert('Post added successfully!', 'success');
-      }, 2500);
+        updateUI();
+      }, 1000);
     } catch (e) {
       closeModel(addPostModal);
       console.error('AddPost error:', e);
