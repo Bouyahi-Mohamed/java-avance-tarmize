@@ -4,6 +4,7 @@ import { renderProfilePage } from "../pages/profile.js";
 import render from '../App.js';
 import { renderDetailPost } from "../pages/detailPost.js";
 import { showAlert } from "./alert.js";
+import { extractUserIdFromURL } from "./extractParams.js";
 export function updateUI(index = 1) {
   window.scrollTo({ top: 0, behavior: "auto" });
   const token = JSON.parse(localStorage.getItem('token')) || { logedin: false, id: '' };
@@ -18,10 +19,11 @@ export function updateUI(index = 1) {
   else if (window.location.pathname.endsWith('profile.html')) {
     if (token.logedin && token.id) {
       Promise.all([
-        getPostsUser(),
+        getPostsUser(extractUserIdFromURL()),
+        getUserById(extractUserIdFromURL()),
         getUserById(token.id)
-      ]).then(([posts, user]) => {
-        renderProfilePage(posts, user);
+      ]).then(([posts, user, currentUser]) => {
+        renderProfilePage(posts, user, currentUser);
         logout();
       });
     } else {

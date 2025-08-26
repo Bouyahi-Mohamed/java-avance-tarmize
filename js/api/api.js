@@ -82,6 +82,7 @@ async function getUserById(id) {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).token}`
       }
     });
+    console.log('Fetched user:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching user by ID:', error);
@@ -124,14 +125,15 @@ function addCommentToPost(postId, commentBody) {
 }
 
 // get posts user
- async function getPostsUser() {
+ async function getPostsUser(iduser) {
   try {
-    const idUser = JSON.parse(localStorage.getItem('token')).id;
-    const posts = await getAllpost();
-    let userPosts = posts.filter(post => {
-      return post.author.id === idUser;
+    const response = await axios.get(`https://tarmeezacademy.com/api/v1/users/${iduser}/posts`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).token}`
+      }
     });
-    return userPosts;
+    let posts = response.data.data;  // Extract the posts data from the response
+    return posts;
   } catch (error) {
     console.error('Error fetching posts by user ID:', error);
     throw error;

@@ -34,7 +34,7 @@ export function header(user = {}) {
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="../html/profile.html">profile</a>
+                  <a class="nav-link  btn user-details ${token.logedin ? 'active' : 'disabled'}" aria-current="page" data-user-id=${user.data.id}>profile</a>
                 </li>
               </ul>
               <!-- user info login and register -->
@@ -83,14 +83,18 @@ export function post(posts = []) {
 
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
           <div class="card-header p-1 bg-light">
+            <div class=" btn user-details cursor-pointer" data-user-id="${post.author.id}">
               <img
                 src="${post.author && post.author.profile_image ? post.author.profile_image : '../images/user.jpeg'}"
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
-                onerror="this.src='../images/user.jpeg'
+                onerror="this.src='../images/user.jpeg'"
+              />
                "
               />
-              <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'yarab'}</span>
+              <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'unknown'}</span>
+              </div>
+
             </div>
             <div class="card-body bg-light">
           <div class=" tagImg" data-id="${post.id}">
@@ -212,3 +216,15 @@ export function detailPost() {
     });
   });
 }
+
+export function linkUserProfile() {
+  const userDetails = document.querySelectorAll('.user-details');
+  userDetails.forEach(detail => {
+    detail.addEventListener('click', (e) => {
+      e.preventDefault();
+      const userId = e.currentTarget.dataset.userId;
+      window.location = '../html/profile.html?userId=' + userId;
+    });
+  });
+}
+

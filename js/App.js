@@ -7,7 +7,7 @@ import {
   logout,
 } from "./api/Modal.js";
 
-import { header,post,navPagination,handlePagination,detailPost} from "./pages/index.js";
+import { header,post,navPagination,handlePagination,detailPost,linkUserProfile} from "./pages/index.js";
 
 // save token in localStorage
 if (!localStorage.getItem("token")) {
@@ -51,6 +51,7 @@ export default function render(posts = [], user = {}) {
   handleAddPost(); // Attach add post event after rendering
   handlePagination(); // Attach pagination event after rendering
   detailPost(); // Attach detail post event after rendering
+  linkUserProfile(); // Attach user profile link event after rendering
 }
 
 // Fetch posts and render them

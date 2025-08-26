@@ -3,10 +3,11 @@ import { deletePost , updatePost} from "../api/api.js";
 import { UpdateProfilePost,logout} from "../api/Modal.js";
 import { showAlert } from "../utils/alert.js";
 import { updateUI } from "../utils/updateUi.js";
-export function renderProfilePage(posts, user) {
+export function renderProfilePage(posts, user,currentUser) {
     const root = document.getElementById("root-profile");
     let HTML = `
-    ${header(user)}
+    ${header(currentUser)}
+    ${detailUser(user,posts)}
     ${post(posts, user)}
   `;
   root.innerHTML = HTML;
@@ -26,9 +27,7 @@ function post(posts = [], user) {
       ${posts
             .map(
                 (post) => `
-        <div class='alert'>
-        </div>
-
+       
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
           <div class="card-header row bg-light">
             <div class="col-1">
@@ -123,6 +122,41 @@ function post(posts = [], user) {
   `;
     return indexPosts;
 }
+
+  // profile details
+  function detailUser(user, posts){
+    const html=`
+      <div class="card col-8 mx-auto shadow rounded bg-body mb-4">
+          <div class="card-img row bg-light">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="${user.data.profile_image ? user.data.profile_image : '../images/user.jpeg'} " alt="User Image" class="img-fluid rounded-start">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body ms-4">
+        <h5 class="card-title">Profile ${user.data.name}</h5>
+        <div class="mt-4 mb-5 ">
+        <p class="card-text">
+        <b>Email:</b> ${user.data.email}
+        </p>
+        <p class="card-text">
+        <b>Number of comments:</b> ${user.data.comments_count || 0}
+        </p>
+        <p class="card-text">
+        <b>Number of posts:</b> ${user.data.posts_count || 0}
+        </p>
+        </div>
+        <p class="card-text float-end text-dark-50"><small class="text-body-secondary">Last action ${posts && posts[0] ? posts[0].created_at
+ : 'N/A'} </small></p>
+      </div>
+    </div>
+  </div>
+          </div>
+      </div>
+    `;
+    return html;
+  }
+
  function handleDeletePost() {
   const btnDelete = document.querySelectorAll(`.deletePost`);
   btnDelete.forEach(btn => {

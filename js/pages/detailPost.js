@@ -1,4 +1,5 @@
 import { addCommentToPost } from "../api/api.js";
+import { linkUserProfile } from "./index.js";
 export function renderDetailPost(post = 1, user) {
     
   const detailPostContainer = document.getElementById("detailPost");
@@ -7,6 +8,7 @@ export function renderDetailPost(post = 1, user) {
   `;
   detailPostContainer.innerHTML = HTML;
   handleAddComment();
+  linkUserProfile();
   HTML = "";
 };
 
@@ -40,6 +42,7 @@ export function postDetail(post,user){
 
         <div class="card col-8 mx-auto shadow rounded bg-body mb-4 ">
           <div class="card-header p-1 bg-light d-flex align-items-center justify-content-evenly">
+            <div class=" btn user-details d-flex align-items-center gap-2" data-user-id="${post.data.author.id}">
               <img
                 src="${
                   post.data.author.profile_image
@@ -56,6 +59,7 @@ export function postDetail(post,user){
                   ? post.data.author.username
                   : "unknown"
               }</span>
+            </div>
               <a class="btn" href="../html/index.html">
                 <i class="fa-solid fa-circle-arrow-left fa-lg"></i>
               </a>
