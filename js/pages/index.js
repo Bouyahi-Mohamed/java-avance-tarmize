@@ -34,7 +34,7 @@ export function header(user = {}) {
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link  btn user-details ${token.logedin ? 'active' : 'disabled'}" aria-current="page" data-user-id=${user.data.id}>profile</a>
+                  <a class="nav-link  user-details ${token.logedin ? 'active' : 'disabled'}" aria-current="page" data-user-id="${token.logedin ? user.data.id : ''}" style="cursor: pointer;">profile</a>
                 </li>
               </ul>
               <!-- user info login and register -->
@@ -89,8 +89,6 @@ export function post(posts = []) {
                 class="user-icon rounded-circle img-thumbnail"
                 alt=""
                 onerror="this.src='../images/user.jpeg'"
-              />
-               "
               />
               <span class="fw-bold text-dark fs-5">@ ${post.author && post.author.username ? post.author.username : 'unknown'}</span>
               </div>
